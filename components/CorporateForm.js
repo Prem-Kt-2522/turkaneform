@@ -6,14 +6,14 @@ export default function CorporateForm() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [salary, setSalary] = useState('');
-  const [jsPDF, setJsPDF] = useState(null);
+  const [jspdfLib, setJspdfLib] = useState(null);
 
   useEffect(() => {
     // Dynamically import jsPDF in the client
     const loadJsPDF = async () => {
       try {
         const jspdfModule = await import('jspdf');
-        setJsPDF(jspdfModule.jsPDF);
+        setJspdfLib(jspdfModule.default);
       } catch (error) {
         console.error("Failed to load jsPDF:", error);
       }
@@ -23,7 +23,7 @@ export default function CorporateForm() {
   }, []);
 
   const generatePDF = () => {
-    if (!jsPDF) {
+    if (!jspdfLib) {
       alert('PDF generator is still loading. Please try again in a moment.');
       return;
     }
@@ -33,21 +33,27 @@ export default function CorporateForm() {
       return;
     }
 
-    const doc = new jsPDF();
+    try {
+      // Create a new instance of jsPDF
+      const doc = new jspdfLib();
 
-    const salaryNum = parseFloat(salary);
-    const doubledSalary = salaryNum * 2;
+      const salaryNum = parseFloat(salary);
+      const doubledSalary = salaryNum * 2;
 
-    doc.setFont("helvetica", "bold");
-    doc.text("Corporate Employee Details", 20, 20);
+      doc.setFont("helvetica", "bold");
+      doc.text("Corporate Employee Details", 20, 20);
 
-    doc.setFont("helvetica", "normal");
-    doc.text(`First Name: ${firstName}`, 20, 40);
-    doc.text(`Last Name: ${lastName}`, 20, 50);
-    doc.text(`Original Salary: ${salary}`, 20, 60);
-    doc.text(`Doubled Salary: ${doubledSalary}`, 20, 70);
+      doc.setFont("helvetica", "normal");
+      doc.text(`First Name: ${firstName}`, 20, 40);
+      doc.text(`Last Name: ${lastName}`, 20, 50);
+      doc.text(`Original Salary: ${salary}`, 20, 60);
+      doc.text(`Doubled Salary: ${doubledSalary}`, 20, 70);
 
-    doc.save(`${firstName}_${lastName}_Details.pdf`);
+      doc.save(`${firstName}_${lastName}_Details.pdf`);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("There was an error generating the PDF. Please try again.");
+    }
   };
 
   return (
