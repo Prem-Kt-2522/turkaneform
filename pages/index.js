@@ -1,6 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 
+// Dynamically import jsPDF
+const loadJsPDF = async () => {
+  const module = await import("jspdf");
+  return module.default; // Ensure correct import
+};
+
 export default function Home() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -8,7 +14,7 @@ export default function Home() {
   const [JsPDF, setJsPDF] = useState(null);
 
   useEffect(() => {
-    import("jspdf").then((mod) => setJsPDF(() => mod.default)); // Dynamically import jsPDF
+    loadJsPDF().then(setJsPDF); // Load jsPDF on client
   }, []);
 
   const generatePDF = () => {
@@ -17,7 +23,7 @@ export default function Home() {
       alert("Please fill all fields");
       return;
     }
-    const doc = new JsPDF();
+    const doc = new JsPDF(); // Now it works properly
     const doubledSalary = salary * 2;
 
     doc.setFont("helvetica", "bold");
@@ -64,7 +70,7 @@ export default function Home() {
         <button 
           onClick={generatePDF} 
           className="w-full bg-blue-500 text-white font-medium py-2 mt-4 rounded-md hover:bg-blue-700"
-          disabled={!JsPDF} // Disable button until jsPDF loads
+          disabled={!JsPDF} // Disable button until jsPDF is loaded
         >
           Generate PDF
         </button>
