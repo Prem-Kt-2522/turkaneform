@@ -6,21 +6,24 @@ export default function CorporateForm() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [salary, setSalary] = useState('');
-  const [jsPDFReady, setJsPDFReady] = useState(false);
+  const [jsPDF, setJsPDF] = useState(null);
 
   useEffect(() => {
     // Dynamically import jsPDF in the client
     const loadJsPDF = async () => {
-      const jspdfModule = await import('jspdf');
-      window.jspdf = jspdfModule;
-      setJsPDFReady(true);
+      try {
+        const jspdfModule = await import('jspdf');
+        setJsPDF(jspdfModule.jsPDF);
+      } catch (error) {
+        console.error("Failed to load jsPDF:", error);
+      }
     };
 
     loadJsPDF();
   }, []);
 
   const generatePDF = () => {
-    if (!jsPDFReady) {
+    if (!jsPDF) {
       alert('PDF generator is still loading. Please try again in a moment.');
       return;
     }
@@ -30,7 +33,6 @@ export default function CorporateForm() {
       return;
     }
 
-    const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
     const salaryNum = parseFloat(salary);
