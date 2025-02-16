@@ -49,6 +49,8 @@ export default function CorporateForm() {
   };
 
   return (
+
+    <div className="bg-blue-500 p-4 m-4">Test container</div>    
     <div className="bg-white p-6 rounded-lg shadow-md w-80 mx-auto my-8">
       <h2 className="text-xl font-bold mb-4 text-center">Corporate Form</h2>
       
