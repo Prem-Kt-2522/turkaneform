@@ -1,5 +1,3 @@
-pages/index.js
-
 import CorporateForm from '../components/CorporateForm';
 
 export default function Home() {
