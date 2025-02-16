@@ -1,14 +1,11 @@
-import './globals.css'
+"use client"
 
-export const metadata = {
-  title: 'Corporate Form',
-  description: 'A corporate form application using Tailwind CSS',
-}
+import CorporateForm from '../components/CorporateForm'
 
-export default function RootLayout({ children }) {
+export default function Home() {
   return (
-    <html lang="en" className="light">
-      <body className="bg-gray-100 flex justify-center items-center min-h-screen">{children}</body>
-    </html>
+    <main className="flex justify-center items-center w-full">
+      <CorporateForm />
+    </main>
   )
-}
+}s
