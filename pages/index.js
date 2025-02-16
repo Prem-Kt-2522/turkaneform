@@ -1,11 +1,13 @@
-"use client"
+pages/index.js
 
-import CorporateForm from '../components/CorporateForm'
+import CorporateForm from '../components/CorporateForm';
 
 export default function Home() {
   return (
-    <main className="flex justify-center items-center w-full">
-      <CorporateForm />
-    </main>
-  )
+    <div className="bg-gray-100 flex justify-center items-center min-h-screen">
+      <main className="flex justify-center items-center w-full">
+        <CorporateForm />
+      </main>
+    </div>
+  );
 }
