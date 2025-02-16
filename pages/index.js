@@ -1,19 +1,23 @@
-// pages/index.js
 "use client";
-import { useState } from "react";
-import { jsPDF } from "jspdf";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [salary, setSalary] = useState("");
+  const [JsPDF, setJsPDF] = useState(null);
+
+  useEffect(() => {
+    import("jspdf").then((mod) => setJsPDF(() => mod.default)); // Dynamically import jsPDF
+  }, []);
 
   const generatePDF = () => {
+    if (!JsPDF) return;
     if (!firstName || !lastName || !salary) {
       alert("Please fill all fields");
       return;
     }
-    const doc = new jsPDF();
+    const doc = new JsPDF();
     const doubledSalary = salary * 2;
 
     doc.setFont("helvetica", "bold");
@@ -60,6 +64,7 @@ export default function Home() {
         <button 
           onClick={generatePDF} 
           className="w-full bg-blue-500 text-white font-medium py-2 mt-4 rounded-md hover:bg-blue-700"
+          disabled={!JsPDF} // Disable button until jsPDF loads
         >
           Generate PDF
         </button>
