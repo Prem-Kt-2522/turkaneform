@@ -6,24 +6,21 @@ export default function CorporateForm() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [salary, setSalary] = useState('');
-  const [jspdfLib, setJspdfLib] = useState(null);
+  const [jsPDFReady, setJsPDFReady] = useState(false);
 
   useEffect(() => {
     // Dynamically import jsPDF in the client
     const loadJsPDF = async () => {
-      try {
-        const jspdfModule = await import('jspdf');
-        setJspdfLib(jspdfModule.default);
-      } catch (error) {
-        console.error("Failed to load jsPDF:", error);
-      }
+      const jspdfModule = await import('jspdf');
+      window.jspdf = jspdfModule;
+      setJsPDFReady(true);
     };
 
     loadJsPDF();
   }, []);
 
   const generatePDF = () => {
-    if (!jspdfLib) {
+    if (!jsPDFReady) {
       alert('PDF generator is still loading. Please try again in a moment.');
       return;
     }
@@ -33,27 +30,22 @@ export default function CorporateForm() {
       return;
     }
 
-    try {
-      // Create a new instance of jsPDF
-      const doc = new jspdfLib();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-      const salaryNum = parseFloat(salary);
-      const doubledSalary = salaryNum * 2;
+    const salaryNum = parseFloat(salary);
+    const doubledSalary = salaryNum * 2;
 
-      doc.setFont("helvetica", "bold");
-      doc.text("Corporate Employee Details", 20, 20);
+    doc.setFont("helvetica", "bold");
+    doc.text("Corporate Employee Details", 20, 20);
 
-      doc.setFont("helvetica", "normal");
-      doc.text(`First Name: ${firstName}`, 20, 40);
-      doc.text(`Last Name: ${lastName}`, 20, 50);
-      doc.text(`Original Salary: ${salary}`, 20, 60);
-      doc.text(`Doubled Salary: ${doubledSalary}`, 20, 70);
+    doc.setFont("helvetica", "normal");
+    doc.text(`First Name: ${firstName}`, 20, 40);
+    doc.text(`Last Name: ${lastName}`, 20, 50);
+    doc.text(`Original Salary: ${salary}`, 20, 60);
+    doc.text(`Doubled Salary: ${doubledSalary}`, 20, 70);
 
-      doc.save(`${firstName}_${lastName}_Details.pdf`);
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      alert("There was an error generating the PDF. Please try again.");
-    }
+    doc.save(`${firstName}_${lastName}_Details.pdf`);
   };
 
   return (
